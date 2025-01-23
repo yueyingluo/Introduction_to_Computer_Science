@@ -1,0 +1,63 @@
+# 罗玥萦 2300017819
+	.pos 0
+	irmovq	stack,%rsp
+	call main
+	halt
+
+	.align 8
+array:
+	.quad 0xbca
+	.quad 0xcba
+	.quad 0xacb
+	.quad 0xcab
+	.quad 0xabc
+	.quad 0xbac
+	
+################################################################################
+# You may want to modify this portion
+
+
+main:
+	irmovq array, %rdi
+	irmovq $6, %rsi
+	irmovq $8, %r10
+	call bubble_sort
+	ret
+
+# bubble_sort(long *data, long count)
+bubble_sort:
+    rrmovq %rdi, %rax # inner i
+    irmovq $0x28, %rcx # outer last
+	addq %rdi, %rcx
+
+outer_loop:
+	rrmovq %rcx, %r11
+    subq %rdi, %r11
+	jle end
+    rrmovq %rdi, %rax # reset i to data
+
+inner_loop:
+	rrmovq %rax, %r11
+    subq %rcx, %r11
+	jge end3
+	mrmovq (%rax), %r8 # *i
+	mrmovq 8(%rax), %r9 # *(i+1)
+	rrmovq %r8, %r11
+	subq %r9, %r11
+	jle end2
+	rmmovq %r9, (%rax)
+	rmmovq %r8, 8(%rax)
+
+end2:
+	addq %r10, %rax
+	jmp inner_loop
+
+end3:
+	subq %r10, %rcx
+	jmp outer_loop
+
+end:
+	ret
+
+    .pos 0x200
+stack:
